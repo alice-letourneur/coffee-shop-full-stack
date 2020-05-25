@@ -83,3 +83,179 @@ There are `@TODO` comments throughout the `./backend/src`. We recommend tackling
 
 1. `./src/auth/auth.py`
 2. `./src/api.py`
+
+
+# API Documentation
+
+## Getting Started
+- Base URL: At present this app can only be run locally and is not hosted as a base URL. The backend app is hosted at the default, http://127.0.0.1:5000/.
+
+## Error Handling
+
+The API will return these error types when requests fail:
+
+- 405: Method not allowed
+- 400: Bad request
+- 404: Not found
+- 422: Unprocessable
+- 401: Unauthorized
+- 403: Not allowed
+
+## Endpoints library
+
+### `GET /drinks`
+
+No authorization headers required.
+Returns a list of all drinks with a short description of their composition.
+
+Request example:
+```
+curl http://127.0.0.1:5000/drinks
+```
+
+Response sample:
+```
+{
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "blue",
+          "parts": 1
+        }
+      ],
+      "title": "Water3"
+    }
+  ],
+  "success": true
+}
+```
+
+### `GET /drinks-detail`
+
+This endpoint is restricted to authenticated users who have the following permission: `get:drinks-detail`
+Returns a list of all drinks with the full details of their composition.
+
+Request example:
+```
+curl http://127.0.0.1:5000/drinks-detail -H 'Authorization: <your_bearer_token>'
+```
+
+Response sample:
+```
+{
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "blue",
+          "name": "Water",
+          "parts": 1
+        }
+      ],
+      "title": "Water3"
+    }
+  ],
+  "success": true
+}
+```
+
+### `POST /drinks`
+
+This endpoint is restricted to authenticated users who have the following permission: `post:drinks`
+Creates a new drink using the submitted title and recipe params.
+Returns the create drink with the full details of its composition and its id.
+
+Request example:
+
+```
+curl -X POST 'localhost:5000/drinks' -H 'Content-Type: application/json' -H 'Authorization: <your_bearer_token>' -H 'Content-Type: application/json' -d '{"title": "Capuccino", "recipe": [{"name": "Milk", "color": "white", "parts": 1}, {"name": "Coffee", "color": "black", "parts": 3}]}'
+```
+
+Response sample:
+```
+{
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "white",
+          "name": "Milk",
+          "parts": 1
+        },
+        {
+          "color": "black",
+          "name": "Coffee",
+          "parts": 3
+        },
+      ],
+      "title": "Capuccino"
+    }
+  ],
+  "success": true
+}
+```
+
+### `PATCH /drinks/<id>`
+
+This endpoint is restricted to authenticated users who have the following permission: `patch:drinks`
+Updates the drink with the given ID if it exists using the submitted title and recipe params.
+Returns the updated drink with the full details of its composition and its id.
+
+Request example:
+
+```
+curl -X PATCH 'localhost:5000/drinks' -H 'Content-Type: application/json' -H 'Authorization: <your_bearer_token>' -H 'Content-Type: application/json' -d '{"title": "Mocha", "recipe": [{"name": "Milk", "color": "white", "parts": 1}, {"name": "Coffee", "color": "black", "parts": 2}, {"name": "Chocolate", "color": "brown", "parts": 1}]}'
+```
+
+Response sample:
+```
+{
+  "drinks": [
+    {
+      "id": 1,
+      "recipe": [
+        {
+          "color": "white",
+          "name": "Milk",
+          "parts": 1
+        },
+        {
+          "color": "black",
+          "name": "Coffee",
+          "parts": 2
+        },
+        {
+          "color": "brown",
+          "name": "Chocolate",
+          "parts": 1
+        }
+      ],
+      "title": "Mocha"
+    }
+  ],
+  "success": true
+}
+```
+
+### `DELETE /drinks/<id>`
+
+This endpoint is restricted to authenticated users who have the following permission: `delete:drinks`
+Deletes the drink with the given ID if it exists. Returns the id of the deleted drink.
+
+Request example:
+
+```
+curl -X DELETE http://127.0.0.1:5000/drinks/1 -H 'Authorization: <your_bearer_token>'
+```
+
+Response sample:
+```
+{
+  "id": "1",
+  "success": true
+}
+```
